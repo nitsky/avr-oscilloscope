@@ -72,12 +72,6 @@ void init_comparator(void)
     cbi( ACSR, ACIE ); // disable interrupt
 
     cbi( ACSR, ACIC ); // disable input capture interrupt
-
-    sbi( ACSR, ACIS1 ); // trigger interrupt
-    sbi( ACSR, ACIS0 ); // on rising edge
-
-    sbi(DIDR1, AIN1D);
-    sbi(DIDR1, AIN0D);
 }
 
 ISR(ADC_vect)
