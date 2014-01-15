@@ -19,7 +19,7 @@ class GraphFrame(wx.Frame):
     def __init__(self):
         wx.Frame.__init__(self, None, -1, self.title)
 
-        self.port = None
+        self.port = serial.Serial('/dev/tty.usbserial-FTGO08I9', 115200)
         for port, _, _ in list_ports.comports():
             try:
                 port = serial.Serial(port, 115200, timeout=1)
@@ -92,9 +92,9 @@ class GraphFrame(wx.Frame):
 
     def on_redraw_timer(self, event):
         self.port.write('r')
-        raw = self.s.read(1024)
+        raw = self.port.read(1024)
         self.data = list(struct.unpack('B'*1024, raw))
-        self.data = [(float(x)/255 - 1.0) * 20 for x in self.data]
+        self.data = [(float(x)/255.0 - 0.5) * 20 for x in self.data]
         self.draw_plot()
 
     def on_exit(self, event):

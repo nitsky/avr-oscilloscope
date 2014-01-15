@@ -1,6 +1,6 @@
 DEVICE     = atmega328p
 CLOCK      = 16000000
-FUSES      = -U hfuse:w:0xDE:m -U lfuse:w:0xFF:m
+FUSES      = -U hfuse:w:0xDA:m -U lfuse:w:0xFF:m -U efuse:w:0x05:m
 PROGRAMMER = -c usbasp -P usb
 
 CFLAGS=-mmcu=$(DEVICE) -Wall -Os -DF_CPU=$(CLOCK)
@@ -14,3 +14,7 @@ main.out: main.c
 
 flash: main.hex
 	avrdude -p $(DEVICE) $(PROGRAMMER) -U flash:w:main.c.hex
+
+fuse:
+	avrdude -p $(DEVICE) $(PROGRAMMER) $(FUSES)
+

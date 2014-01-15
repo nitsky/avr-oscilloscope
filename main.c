@@ -22,6 +22,7 @@ volatile uint8_t adc_data[ADC_BUFFER_SIZE];
 
 volatile int16_t stop_index = -1;
 volatile bool freeze = false;
+volatile uint16_t timer = 0;
 volatile uint8_t comp = 0xFF;
 
 void init_adc();
@@ -86,6 +87,7 @@ ISR(ADC_vect)
         stop_index = ((adc_counter + (ADC_BUFFER_SIZE >> 1) ) & 0x03FF);
     }
     adc_counter = (( adc_counter + 1 ) & 0x03FF); // increment adc counter
+    timer = timer + 1;
     comp = (comp << 1); // push next comparator value
     comp += (ACSR & (1 << ACO));
 }
@@ -125,7 +127,8 @@ void init_pwm()
 
 void read_cmd()
 {
-    while (!freeze); // wait for the adc to freeze
+    timer = 0;
+    while (!(freeze || timer > 1023)); // wait for the adc to freeze
     stop_adc();
 
     int i;
