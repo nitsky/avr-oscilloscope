@@ -2,40 +2,15 @@ DEVICE     = atmega328p
 CLOCK      = 16000000
 FUSES      = -U hfuse:w:0xDE:m -U lfuse:w:0xFF:m
 PROGRAMMER = -c usbasp -P usb
-OBJECTS    = main.o
 
-AVRDUDE    = avrdude $(PROGRAMMER) -p $(DEVICE)
-COMPILE    = avr-gcc -std=gnu99 -g -Wall -Winline -O3 -DF_CPU=$(CLOCK) -mmcu=$(DEVICE)
+CFLAGS=-mmcu=$(DEVICE) -Wall -Os -DF_CPU=$(CLOCK)
 
-LINK_FLAGS = -lc -lm
+main.hex: main.out
+	avr-objcopy -O ihex main.out main.c.hex;\
+	avr-size --mcu=$(DEVICE) --format=avr main.out
 
-%.o: %.c
-	$(COMPILE) -c $< -o $@
+main.out: main.c
+	avr-gcc $(CFLAGS) -I./ -o main.out main.c
 
-%.o: %.s
-	$(COMPILE) -S $< -o $@
-
-cpp:
-	$(COMPILE) -E main.c
-
-flash:	all
-	$(AVRDUDE) -U flash:w:main.hex:i
-
-fuse:
-	$(AVRDUDE) $(FUSES)
-
-clean:
-	rm -f main.hex main.elf $(OBJECTS)
-
-main.elf: $(OBJECTS)
-	$(COMPILE) -o main.elf $(OBJECTS) $(LINK_FLAGS)
-
-main.hex: main.elf
-	rm -f main.hex
-	avr-objcopy -j .text -j .data -O ihex main.elf main.hex
-
-disasm:	main.elf
-	avr-objdump -d main.elf
-
-%.lst: %.c
-	{ echo '.psize 0' ; $(COMPILE) -S -g -o - $< ; } | avr-as -alhd -mmcu=$(DEVICE) -o /dev/null - > $@
+flash: main.hex
+	avrdude -p $(DEVICE) $(PROGRAMMER) -U flash:w:main.c.hex

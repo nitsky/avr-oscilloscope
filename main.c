@@ -33,21 +33,21 @@ void init_adc()
 {
     cbi(ADCSRA, ADEN); // disable adc
     cbi(ADCSRA, ADSC); // stop conversion
-    
+
     cbi(ADMUX, REFS1); // choose AVcc with external cap
     sbi(ADMUX, REFS0); // for adc voltage reference
     sbi(ADMUX, ADLAR); // left adjust adc readings for 8 bit
     ADMUX |= ( 0 & 0x07 ); // choose analog 0 pin
-    
+
     sbi(ADCSRA, ADATE); // enable auto trigger of adc
     sbi(ADCSRA, ADIE); // enable adc interrupt
-    
+
     cbi(ADCSRA, ADPS2); // set prescaler to 4
     sbi(ADCSRA, ADPS1); //
     cbi(ADCSRA, ADPS0); //
-    
+
     cbi(ADCSRB, ACME); // choose AIN1 for comparator
-    
+
     cbi(ADCSRB, ADTS2); // choose free running mode
     cbi(ADCSRB, ADTS1); // for auto trigger adc
     cbi(ADCSRB, ADTS0);
@@ -70,12 +70,12 @@ void init_comparator(void)
     cbi( ACSR, ACD ); // turn on comparator
     cbi( ACSR, ACBG ); // choose digital pin 7 for comparator
     cbi( ACSR, ACIE ); // disable interrupt
-    
+
     cbi( ACSR, ACIC ); // disable input capture interrupt
-    
+
     sbi( ACSR, ACIS1 ); // trigger interrupt
     sbi( ACSR, ACIS0 ); // on rising edge
-    
+
     sbi(DIDR1, AIN1D);
     sbi(DIDR1, AIN0D);
 }
@@ -99,13 +99,13 @@ ISR(ADC_vect)
 void uart_init() {
     UBRR0H = UBRRH_VALUE;
     UBRR0L = UBRRL_VALUE;
-    
+
 #if USE_2X
     UCSR0A |= _BV(U2X0);
 #else
     UCSR0A &= ~(_BV(U2X0));
 #endif
-    
+
     UCSR0C = _BV(UCSZ01) | _BV(UCSZ00); // 8 bit
     UCSR0B = _BV(RXEN0) | _BV(TXEN0); // enable rx and tx
 }
@@ -133,13 +133,13 @@ void read_cmd()
 {
     while (!freeze); // wait for the adc to freeze
     stop_adc();
-    
+
     int i;
     for (i = 0; i < ADC_BUFFER_SIZE - adc_counter; i++)
         uart_putchar(((char *)adc_data)[adc_counter + i]);
     for (i = 0; i < adc_counter; i++)
         uart_putchar(((char *)adc_data)[i]);
-    
+
     start_adc();
 }
 
@@ -153,7 +153,7 @@ void trigger_val_cmd()
 }
 
 int main() {
-    
+
     uart_init();
 
     sei(); // enable interrupts
@@ -161,14 +161,17 @@ int main() {
     init_adc();
     init_comparator();
     init_pwm();
-    
+
     start_adc();
-    
+
     while (true) {
-       
+
         char command = uart_getchar();
-        
+
         switch (command) {
+            case 'p':
+                uart_putchar('p');
+                break;
             case 'r':
                 read_cmd();
                 break;
@@ -176,9 +179,9 @@ int main() {
                 trigger_val_cmd();
                 break;
         }
-        
+
     }
-    
+
     return 0;
-    
+
 }
