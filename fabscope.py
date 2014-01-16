@@ -20,19 +20,6 @@ class GraphFrame(wx.Frame):
         wx.Frame.__init__(self, None, -1, self.title)
 
         self.port = serial.Serial('/dev/tty.usbserial-FTGO08I9', 115200)
-        for port, _, _ in list_ports.comports():
-            try:
-                port = serial.Serial(port, 115200, timeout=1)
-            except:
-                continue
-            port.write('p')
-            if port.read() == 'p':
-                self.port = port
-                break
-
-        if not self.port:
-            print 'error: could not find fabscope'
-            sys.exit(1)
 
         self.data = [0]*1024
         self.paused = False
@@ -81,7 +68,7 @@ class GraphFrame(wx.Frame):
     def draw_plot(self):
 
         self.axes.set_xbound(lower=0, upper=1023)
-        self.axes.set_ybound(lower=-11.0, upper=11.0)
+        self.axes.set_ybound(lower=-11.0, upper=11ma.0)
 
         self.axes.grid(True, color='gray')
 
