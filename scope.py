@@ -68,7 +68,7 @@ class GraphFrame(wx.Frame):
     def draw_plot(self):
 
         self.axes.set_xbound(lower=0, upper=1023)
-        self.axes.set_ybound(lower=-11.0, upper=11ma.0)
+        self.axes.set_ybound(lower=-11.0, upper=11.0)
 
         self.axes.grid(True, color='gray')
 
@@ -80,6 +80,7 @@ class GraphFrame(wx.Frame):
     def on_redraw_timer(self, event):
         self.port.write('r')
         raw = self.port.read(1024)
+        print raw
         self.data = list(struct.unpack('B'*1024, raw))
         self.data = [(float(x)/255.0 - 0.5) * 20 for x in self.data]
         self.draw_plot()
