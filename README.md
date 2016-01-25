@@ -2,7 +2,7 @@
 
 Pushing the ATMega328 to its limit: A 150 ksps oscilloscope with edge triggering written in AVR C.
 
-[circuit board](board.jpg)
+![circuit board](board.jpg)
 
 [Watch Video](https://vimeo.com/80199995)
 
@@ -137,3 +137,4 @@ char uart_getchar() {
 Below is the input signal conditioning circuit. The ADC operates from 0V to 5V, so the circuit uses an op-amp to scale and offset an incoming signal from -10V to 10V to 0V to 5V. It does this with a divide by four voltage divider and then a voltage adder with a 2.5V input from a voltage divider. All resistors in the schematic are 10kΩ except for R11 with is 1 MΩ to make the scope appear as a high impedence to whatever circuit it is measuring.
 
 ![circuit diagram](schematic.png)
+
