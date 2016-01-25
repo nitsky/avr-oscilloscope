@@ -2,10 +2,6 @@
 
 Pushing the ATMega328 to its limit: A 150 ksps oscilloscope with edge triggering written in AVR C.
 
-![circuit board](board.jpg)
-
-[Watch Video](https://vimeo.com/80199995)
-
 ## ADC
 The ADC is configured to operate in free running mode, which means it samples continuously and calls an interrupt when each new sample is ready, which is once every 13.5 ADC clock cycles. The top ADC clock speed for 8-bit resolution is 4MHz, a prescaler of 4 with a 16MHz processor clock. Here is the code that configures the ADC and then functions to start and stop it.
 
@@ -137,4 +133,10 @@ char uart_getchar() {
 Below is the input signal conditioning circuit. The ADC operates from 0V to 5V, so the circuit uses an op-amp to scale and offset an incoming signal from -10V to 10V to 0V to 5V. It does this with a divide by four voltage divider and then a voltage adder with a 2.5V input from a voltage divider. All resistors in the schematic are 10kΩ except for R11 with is 1 MΩ to make the scope appear as a high impedence to whatever circuit it is measuring.
 
 ![circuit diagram](schematic.png)
+
+## Results
+
+![circuit board](board.jpg)
+
+[Watch Video](https://vimeo.com/80199995)
 
