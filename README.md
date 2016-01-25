@@ -2,6 +2,10 @@
 
 Pushing the ATMega328 to its limit: A 150 ksps oscilloscope with edge triggering written in AVR C.
 
+[circuit board](board.jpg)
+
+[Watch Video](https://vimeo.com/80199995)
+
 ## ADC
 The ADC is configured to operate in free running mode, which means it samples continuously and calls an interrupt when each new sample is ready, which is once every 13.5 ADC clock cycles. The top ADC clock speed for 8-bit resolution is 4MHz, a prescaler of 4 with a 16MHz processor clock. Here is the code that configures the ADC and then functions to start and stop it.
 
